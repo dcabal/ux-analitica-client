@@ -4,21 +4,24 @@
             <legend>{{title}}</legend>
             <div class="mb-3 position-relative">
                 <label class="form-label" for="userName">Nombre de usuario:</label>
-                <input v-model="userName" type="text" id="userName" class="form-control" :class="{'border-danger': error.userName}">
+                <input v-model="userName" type="text" id="userName" class="form-control" :class="{'border-danger': validationError.userName}">
                 <i class="bi bi-person"></i>
-                <p class="text-danger" v-if="error.userName">Introduce un nombre de usuario</p>
+                <p class="text-danger" v-if="validationError.userName">Introduce un nombre de usuario</p>
             </div>
             <div class="mb-3 position-relative" v-if="!isLogin">
                 <label for="email" class="form-label">Email:</label>
-                <input v-model="email" type="email" id="email" class="form-control" :class="{'border-danger': error.email}">
+                <input v-model="email" type="email" id="email" class="form-control" :class="{'border-danger': validationError.email}">
                 <i class="bi bi-at"></i>
-                <p class="text-danger" v-if="error.email">Introduce un email válido</p>
+                <p class="text-danger" v-if="validationError.email">Introduce un email válido</p>
             </div>
             <div class="mb-3 position-relative">
                 <label for="password" class="form-label">Contraseña:</label>
-                <input v-model="password" type="password" id="password" class="form-control" :class="{'border-danger': error.password}">
-                <p class="text-danger" v-if="error.password">Introduce una contraseña</p>
+                <input v-model="password" type="password" id="password" class="form-control" :class="{'border-danger': validationError.password}">
+                <p class="text-danger" v-if="validationError.password">Introduce una contraseña</p>
                 <i class="bi bi-lock"></i>
+            </div>
+            <div class="mb-3 alert alert-danger" v-if="loginError.error">
+                {{loginError.errorMsg}}
             </div>
             <div class="d-grid mb-3">
                 <button class="btn btn-success" @click="onClick($event)">Enviar</button>
@@ -31,6 +34,7 @@
 
 <script>
 import http from '../util/Http';
+import router from '../router';
 
 export default {
     name: 'LoginForm',
@@ -38,29 +42,37 @@ export default {
         type: String
     },
     methods: {
-        async submitForm(e) {
+        async submitForm() {
             const endpoint = this.isLogin ? '/login' : '/signup';
+            const dest = this.isLogin ? '/dashboard' : '/login';
             const body = {
                 userName: this.userName,
                 password: this.password,
-                email: !this.isLogin ? email : null
+                email: this?.email
             };
-           
+
             try {
                 const res = await http.post(endpoint, body);
-                console.log('res', res);
-            } catch (er) {
-                console.error('er', er);
+                this.loginError.error = false;
+
+                if (this.isLogin) {
+                    sessionStorage.setItem('uxa-jwt', res.data);
+                }
+
+                router.push({ path: dest });
+            } catch (er) {console.log(er);
+                this.loginError.error = true;
+                this.loginError.errorMsg = er.message;
             }
         },
 
         onClick(e) {
             e.preventDefault();
-            this.error.userName = !this.userName;
-            this.error.email = !this.isLogin && !this.email;
-            this.error.password = !this.password;
-
-            if (!Object.values(this.error).some(v => v))
+            this.validationError.userName = !this.userName;
+            this.validationError.email = !this.isLogin && !this.email;
+            this.validationError.password = !this.password;
+            
+            if (!Object.values(this.validationError).some(v => v))
                 this.submitForm();
         }
     },
@@ -71,10 +83,14 @@ export default {
             password: '',
             isLogin: this.type === 'login',
             title: this.type === 'login' ? 'Identificación' : 'Registro',
-            error: {
+            validationError: {
                 userName: false,
                 email: false,
                 password: false
+            }, 
+            loginError: {
+                error: false,
+                errorMsg: null
             }
         }
     }

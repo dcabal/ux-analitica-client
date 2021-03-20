@@ -1,6 +1,6 @@
 <template>
     <div class="row">
-        <div class="col-12 col-lg-3 m-auto mt-5">
+        <div class="col-12 col-md-6 m-auto mt-5">
             <login-form type="login" />
         </div>
     </div>

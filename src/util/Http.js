@@ -2,13 +2,26 @@ class Http {
     apiUrl = 'http://localhost:3000';
     headers = { 'Content-Type': 'application/json;charset=utf-8' };
 
-    async post(endpoint, body) {
-        const res = await fetch(`${this.apiUrl}${endpoint}`, { method: 'POST', body: JSON.stringify(body), headers: this.headers });
+    async post(endpoint, payload) {
+        const method = 'POST';
+        const body = JSON.stringify(payload);
+        const headers = this._setHeaders(endpoint);
+        
+        const res = await fetch(`${this.apiUrl}${endpoint}`, { method, body, headers });
 
         if (res.ok)
             return res.json();
-        else
-            throw { status: res.status, message: res.message }
+        else {
+            console.log(res);
+            throw { status: res.status, message: res.statusText }
+        }
+    }
+
+    _setHeaders(endpoint) {
+        const addJwt = endpoint !== '/login' && endpoint !== '/signup';
+        return addJwt ? 
+            { ...this.headers, 'Authorization': `Bearer ${sessionStorage.getItem('uxa-jwt')}` } : 
+            { ...this.headers };
     }
 }
 
