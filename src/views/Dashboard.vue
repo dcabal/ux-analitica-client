@@ -1,9 +1,12 @@
 <template>
-    <h1>Dashboard</h1>
+    <owner-data />
 </template>
 
 <script>
+import OwnerData from '../components/OwnerData';
+
 export default {
-    name: 'Dashboard'
+    name: 'Dashboard',
+    components: { OwnerData }
 }
 </script>

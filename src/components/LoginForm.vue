@@ -60,7 +60,7 @@ export default {
                 }
 
                 router.push({ path: dest });
-            } catch (er) {console.log(er);
+            } catch (er) {
                 this.loginError.error = true;
                 this.loginError.errorMsg = er.message;
             }

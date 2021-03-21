@@ -11,10 +11,35 @@ class Http {
 
         if (res.ok)
             return res.json();
-        else {
-            console.log(res);
-            throw { status: res.status, message: res.statusText }
-        }
+        else 
+            throw { status: res.status, message: res.statusText };
+    }
+
+    async get(endpoint, params) {
+        const headers = this._setHeaders(endpoint);
+        const url = new URL(`${this.apiUrl}${endpoint}`)
+        if (!!params)
+            url.search = new URLSearchParams(params);
+
+        const res = await fetch(url, {headers});
+
+        if (res.ok)
+            return res.json();
+        else
+            throw { status: res.status, message: res.statusText };
+    }
+
+    async patch(endpoint, payload) {
+        const method = 'PATCH';
+        const headers = this._setHeaders(endpoint);
+        const body = JSON.stringify(payload);
+
+        const res = await fetch(`${this.apiUrl}${endpoint}`, { method, body, headers });
+
+        if (res.ok)
+            return res.json();
+        else 
+            throw { status: res.status, message: res.statusText };
     }
 
     _setHeaders(endpoint) {
