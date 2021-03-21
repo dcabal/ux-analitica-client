@@ -2,7 +2,12 @@
     <form novalidate>
         <button v-if="!updating" class="btn btn-success" @click="onToggleForm($event)">Modificar datos</button>
         <fieldset v-if="updating">
-            <p>Deja en blanco los campos que no quieras modificar</p>
+            <div class="mb-3 alert alert-info">
+                Deja en blanco los campos que no quieras modificar
+            </div>
+            <div class="mb-3 alert alert-danger" v-if="error">
+                {{error}}
+            </div>
             <div class="mb-3 position-relative">
                 <label class="form-label" for="userName">Nombre de usuario:</label>
                 <input v-model="userName" type="text" id="userName" class="form-control">
@@ -19,7 +24,7 @@
                 <i class="bi bi-lock"></i>
             </div>
             <div class="d-grid gap-2">
-                <button class="btn btn-success" type="button" :disabled="!userName && !email && !password">Modificar datos</button>
+                <button class="btn btn-success" type="button" :disabled="!userName && !email && !password" @click="onSubmit">Modificar datos</button>
                 <button class="btn btn-secondary" type="button" @click="onToggleForm($event)">Cancelar</button>
             </div>
         </fieldset>
@@ -27,11 +32,24 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
     name: 'UserUpdate',
     methods: {
-        onToggleForm(e) {
+        ...mapActions(['updateOwner']),
+        async onSubmit(e) {
             e.preventDefault();
+            await this.updateOwner({
+                userName: this.userName,
+                password: this.password,
+                email: this.email
+            });
+            if (!this.error)
+                this.onToggleForm();
+        },
+        onToggleForm(e) {
+            e?.preventDefault();
             this.updating = !this.updating;
             this.userName = '';
             this.email = '';
@@ -45,7 +63,8 @@ export default {
             email: '',
             password: ''
         }
-    }
+    },
+    computed: mapGetters(['error'])
 }
 </script>
 

@@ -20,8 +20,11 @@
                 <p class="text-danger" v-if="validationError.password">Introduce una contraseña</p>
                 <i class="bi bi-lock"></i>
             </div>
-            <div class="mb-3 alert alert-danger" v-if="loginError.error">
-                {{loginError.errorMsg}}
+            <div class="mb-3 alert alert-danger" v-if="error">
+                {{error}}
+            </div>
+            <div class="mb-3 alert alert-success" v-if="signupSuccess">
+                Registro efectuado correctamente. Identifícate en <router-link to="/login">la página de acceso.</router-link>
             </div>
             <div class="d-grid mb-3">
                 <button class="btn btn-success" @click="onClick($event)">Enviar</button>
@@ -33,8 +36,8 @@
 </template>
 
 <script>
-import http from '../util/Http';
 import router from '../router';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
     name: 'LoginForm',
@@ -42,27 +45,24 @@ export default {
         type: String
     },
     methods: {
+        ...mapActions(['login', 'signup']),
         async submitForm() {
-            const endpoint = this.isLogin ? '/login' : '/signup';
-            const dest = this.isLogin ? '/dashboard' : '/login';
-            const body = {
+            const res = this.isLogin ?
+            await this.login({
+                userName: this.userName,
+                password: this.password
+            }) :
+            await this.signup({
                 userName: this.userName,
                 password: this.password,
-                email: this?.email
-            };
-
-            try {
-                const res = await http.post(endpoint, body);
-                this.loginError.error = false;
-
-                if (this.isLogin) {
-                    sessionStorage.setItem('uxa-jwt', res.data);
-                }
-
-                router.push({ path: dest });
-            } catch (er) {
-                this.loginError.error = true;
-                this.loginError.errorMsg = er.message;
+                email: this.email
+            });
+            
+            if (!this.error) {
+                if (this.isLogin)
+                    router.push({ path: this.isLogin ? '/dashboard' : '/login'});
+                else
+                    this.signupSuccess = true;
             }
         },
 
@@ -88,12 +88,10 @@ export default {
                 email: false,
                 password: false
             }, 
-            loginError: {
-                error: false,
-                errorMsg: null
-            }
+            signupSuccess: false
         }
-    }
+    },
+    computed: mapGetters(['error'])
 }
 </script>
 
