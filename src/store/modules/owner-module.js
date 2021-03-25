@@ -44,7 +44,7 @@ const actions = {
     async addSite({ commit }, host) {
         commit('setError', null);
         await http.patch('/site', { host })
-        .then(sites => commit('setSites', sites))
+        .then(res => commit('setSites', res.sites))
         .catch(er => commit('setError', er.message));
     }
 };

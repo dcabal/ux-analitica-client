@@ -27,16 +27,18 @@
                     </tr>
                 </tbody>
             </table>
+            <new-site/>
         </section>
     </div>
 </template>
 
 <script>
 import UserUpdate from './UserUpdate.vue';
+import NewSite from './NewSite.vue';
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-    components: { UserUpdate },
+    components: { UserUpdate, NewSite },
 
     methods: {
         ...mapActions(['getSite']),
