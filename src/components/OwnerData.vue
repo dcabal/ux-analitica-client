@@ -17,7 +17,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="site in owner.sites" :key="site._id" @click="onRowClick(site)">
+                    <tr v-for="site in owner.sites" 
+                        :key="site._id" 
+                        @click="onRowClick(site)" 
+                        :class="{'table-active': currentSite === site }"
+                    >
                         <td>{{site.host}}</td>
                         <td>{{site.token}}</td>
                     </tr>
@@ -29,27 +33,22 @@
 
 <script>
 import UserUpdate from './UserUpdate.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     components: { UserUpdate },
 
     methods: {
+        ...mapActions(['getSite']),
         onRowClick(site) {
-            
-            console.log(site);
+            this.currentSite = site;
+            this.getSite(site.token);
         }
     },
 
     data() {
         return {
-            userName: '',
-            email: '',
-            sites: [],
-            httpError: {
-                error: true,
-                errorMsg: null
-            }
+            currentSite: null
         }
     },
     
@@ -58,5 +57,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+    tr {
+        cursor: pointer;
+    }
 </style>

@@ -5,14 +5,12 @@ const state = {
         userName: '',
         email: '',
         sites: []
-    },
-    error: null
+    }
 };
 
 const getters = {
     owner: state => state.owner,
-    loggedIn: state => !!state.owner.userName && !!state.owner.email,
-    error: state => state.error
+    loggedIn: state => !!state.owner.userName && !!state.owner.email
 };
 
 const actions = {
@@ -53,8 +51,7 @@ const actions = {
 
 const mutations = {
     setOwner: (state, owner) => state.owner = owner,
-    setSites: (state, sites) => state.owner.sites = sites,
-    setError: (state, error) => state.error = error
+    setSites: (state, sites) => state.owner.sites = sites
 };
 
 export default {
