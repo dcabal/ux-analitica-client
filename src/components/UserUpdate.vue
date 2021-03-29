@@ -5,9 +5,6 @@
             <div class="mb-3 alert alert-info">
                 Deja en blanco los campos que no quieras modificar
             </div>
-            <div class="mb-3 alert alert-danger" v-if="error">
-                {{error}}
-            </div>
             <div class="mb-3 position-relative">
                 <label class="form-label" for="userName">Nombre de usuario:</label>
                 <input v-model="userName" type="text" id="userName" class="form-control">

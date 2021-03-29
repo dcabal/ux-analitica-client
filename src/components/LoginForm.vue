@@ -20,9 +20,6 @@
                 <p class="text-danger" v-if="validationError.password">Introduce una contraseña</p>
                 <i class="bi bi-lock"></i>
             </div>
-            <div class="mb-3 alert alert-danger" v-if="error">
-                {{error}}
-            </div>
             <div class="mb-3 alert alert-success" v-if="signupSuccess">
                 Registro efectuado correctamente. Identifícate en <router-link to="/login">la página de acceso.</router-link>
             </div>
