@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row" v-if="owner?.userName">
         <section class="col-12 col-lg-6">
             <h1 class="border-bottom pb-2 mb-3 fs-2">Datos de usuario</h1>
             <p><strong>Nombre de usuario: </strong>{{owner.userName}}</p>
@@ -36,12 +36,13 @@
 import UserUpdate from './UserUpdate.vue';
 import NewSite from './NewSite.vue';
 import { mapGetters, mapActions } from 'vuex';
+import router from '../router';
 
 export default {
     components: { UserUpdate, NewSite },
 
     methods: {
-        ...mapActions(['getSite']),
+        ...mapActions(['getSite', 'getOwner']),
         onRowClick(site) {
             this.currentSite = site;
             this.getSite(site.token);
@@ -54,7 +55,16 @@ export default {
         }
     },
     
-    computed: mapGetters(['error', 'owner'])
+    computed: mapGetters(['error', 'owner']),
+
+    mounted() {
+        const jwt = sessionStorage.getItem('uxa-jwt');
+        console.log('owner', this.owner)
+        if (!this.owner?.userName && jwt)
+        this.getOwner();
+        else if (!jwt)
+        router.push({ path: '/login'});
+    }
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
     <div>
-    <owner-data />
-    <site-data v-if="site?.length" />
+        <owner-data />
+        <site-data v-if="site?.length" />
     </div>
 </template>
 

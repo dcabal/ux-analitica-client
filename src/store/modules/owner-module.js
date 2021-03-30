@@ -46,6 +46,13 @@ const actions = {
         await http.patch('/site', { host })
         .then(res => commit('setSites', res.sites))
         .catch(er => commit('setError', er.message));
+    },
+
+    async getOwner({ commit }) {
+        commit('setError', null);
+        await http.get('/owner')
+        .then(res => (console.log(res), commit('setOwner', res.owner)))
+        .catch(er => commit('setError', er.message));
     }
 };
 
