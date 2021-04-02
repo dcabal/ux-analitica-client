@@ -59,7 +59,6 @@ export default {
 
     mounted() {
         const jwt = sessionStorage.getItem('uxa-jwt');
-        console.log('owner', this.owner)
         if (!this.owner?.userName && jwt)
         this.getOwner();
         else if (!jwt)

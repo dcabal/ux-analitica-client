@@ -51,7 +51,7 @@ const actions = {
     async getOwner({ commit }) {
         commit('setError', null);
         await http.get('/owner')
-        .then(res => (console.log(res), commit('setOwner', res.owner)))
+        .then(res => commit('setOwner', res.owner))
         .catch(er => commit('setError', er.message));
     }
 };
