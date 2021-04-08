@@ -75,9 +75,9 @@ export default {
     },
     data() {
         return {
-            userName: '',
+            userName: 'prueba3',
             email: '',
-            password: '',
+            password: 'prueba3',
             isLogin: this.type === 'login',
             title: this.type === 'login' ? 'Identificación' : 'Registro',
             validationError: {
