@@ -1,11 +1,22 @@
 <template>
-    <p>{{groupedElements}}</p>
+    <div>
+        <div v-for="(site, index) in Object.entries(groupedElements)" :key="index"  class="row mt-3">
+            <h1>Ruta: {{site[0]}}</h1>
+            <usage-chart chart-type="interactions" :chart-data="site[1]" />
+            <usage-chart chart-type="mouse" :chart-data="site[1]" />
+            <usage-chart chart-type="tab" :chart-data="site[1]" />
+            <usage-chart chart-type="untracked" :chart-data="site[1]" />
+        </div>
+    </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex';
+import UsageChart from './UsageChart.vue';
+
 export default {
     name: 'SiteGraphics',
+    components: { UsageChart },
     computed: mapGetters(['site']),
     mounted() {
         this.extract();
@@ -46,8 +57,8 @@ export default {
             Object.values(this.groupedElements).forEach(value => {
                 for (let v in value) {
                     if (!value[v].length) {
-                        value[v].mouseMovementBefore = Math.round(value[v].mouseMovementBefore / value[v].numInteractions);
-                        value[v].tabPressesBefore = Math.round(value[v].tabPressesBefore / value[v].numInteractions);
+                        value[v].mouseMovementBefore = Math.round(value[v].mouseMovementBefore / value[v].interactions);
+                        value[v].tabPressesBefore = Math.round(value[v].tabPressesBefore / value[v].interactions);
                     }
                 }
             });
@@ -87,18 +98,22 @@ export default {
 
             if (!trackedElement) {
                 route[element.trackedElement] = {
-                    numInteractions: 1,
+                    interactions: 1,
                     mouseMovementBefore: element.mouseMovementBefore,
                     tabPressesBefore: element.tabPressesBefore,
                     html: element.html
                 };
             } else {
-                trackedElement.numInteractions++;
+                trackedElement.interactions++;
                 trackedElement.mouseMovementBefore += element.mouseMovementBefore;
                 trackedElement.tabPressesBefore += element.tabPressesBefore;
             }
 
             return route;
+        },
+
+        getUsage(usage, data) {
+
         }
     },
     data() {
@@ -127,7 +142,7 @@ interactions: {
 groupedElements: {
     "ruta": {
         "elemento(data-uxa)": {
-            numInteractions,
+            interactions,
             mouseMovementBefore,
             tabPressesBefore,
             html
@@ -137,3 +152,8 @@ groupedElements: {
 }
 */
 </script>
+<style lang="scss" scoped>
+h1 {
+    font-size: 1.8rem;
+}
+</style>

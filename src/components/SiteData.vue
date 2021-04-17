@@ -5,11 +5,12 @@
                 <global-data/>
             </div>
         </section>
-        <section class="row mt-3">
-            <div class="col-12">
+        <section>
+        <!--    <div class="col-12"> -->
                 <site-graphics/>
-            </div>
+            <!-- </div> -->
         </section>
+
     </article>
 </template>
 
