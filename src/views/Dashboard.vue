@@ -1,6 +1,6 @@
 <template>
     <div>
-        <owner-data />
+        <!-- <owner-data /> -->
         <site-data v-if="site?.length" />
     </div>
 </template>

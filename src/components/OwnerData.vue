@@ -59,10 +59,11 @@ export default {
 
     mounted() {
         const jwt = sessionStorage.getItem('uxa-jwt');
+        
         if (!this.owner?.userName && jwt)
-        this.getOwner();
+            this.getOwner();
         else if (!jwt)
-        router.push({ path: '/login'});
+            router.push({ path: '/login'});
     }
 }
 </script>

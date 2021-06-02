@@ -48,10 +48,10 @@ const actions = {
         .catch(er => commit('setError', er.message));
     },
 
-    async getOwner({ commit }) {
+    async getOwner({ commit }, ciclo) {
         commit('setError', null);
         await http.get('/owner')
-        .then(res => commit('setOwner', res.owner))
+        .then(owner => commit('setOwner', owner))
         .catch(er => commit('setError', er.message));
     }
 };

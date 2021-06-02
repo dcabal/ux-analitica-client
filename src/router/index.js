@@ -13,7 +13,15 @@ const routes = [
   {
     path: '/dashboard',
     component: () => import('../views/Dashboard.vue')
-  }
+  },
+  {
+    path: '/user',
+    component: () => import('../views/User.vue')
+  },
+  // {
+  //   path: '/sites',
+  //   component: () => import('')
+  // }
 ];
 
 const router = createRouter({
