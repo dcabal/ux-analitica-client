@@ -18,10 +18,10 @@ const routes = [
     path: '/user',
     component: () => import('../views/User.vue')
   },
-  // {
-  //   path: '/sites',
-  //   component: () => import('')
-  // }
+  {
+    path: '/sites',
+    component: () => import('../views/Sites.vue')
+  }
 ];
 
 const router = createRouter({

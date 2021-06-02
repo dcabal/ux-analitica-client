@@ -9,8 +9,7 @@ const state = {
 };
 
 const getters = {
-    owner: state => state.owner,
-    loggedIn: state => !!state.owner.userName && !!state.owner.email
+    owner: state => state.owner
 };
 
 const actions = {

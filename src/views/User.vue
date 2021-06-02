@@ -24,7 +24,7 @@ export default {
 
     created() {
         const jwt = sessionStorage.getItem('uxa-jwt');
-        if (jwt)
+        if (jwt && !this.owner?.name)
             this.getOwner();
         else
             router.push({ path: '/login' });
