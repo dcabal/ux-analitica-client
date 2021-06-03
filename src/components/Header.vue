@@ -7,9 +7,6 @@
                     <div class="collapse navbar-collapse">
                         <ul class="navbar-nav">
                             <li class="nav-item">
-                                <router-link class="nav-link" to="/dashboard">Dashboard</router-link>
-                            </li>
-                            <li class="nav-item">
                                 <router-link class="nav-link" to="/user">Datos de usuario</router-link>
                             </li>
                             <li class="nav-item">

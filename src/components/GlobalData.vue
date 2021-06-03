@@ -53,16 +53,18 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 export default {
     name: 'GlobalData',
     computed: mapGetters(['site']),
-    mounted() {
+    created() {
         this.getGlobalData();
     },
     methods: {
-        getGlobalData() {
-            let siteData = this._getSitePaths();
+        ...mapActions(['getSite']),
+
+        async getGlobalData() {
+            let siteData = await this._getSitePaths();
             for (const siteVisits of this.site) {
                 const { time, pixels, clicks, keyStrokes } = siteData[siteVisits.path];
                 
@@ -94,8 +96,14 @@ export default {
             this.globalMetrics = siteData;
         },
 
-        _getSitePaths() {
+        async _getSitePaths() {
             const sitePaths = {};
+
+            if (!this.site) {
+                const siteToken = JSON.parse(sessionStorage.getItem('currentSite')).token;
+                await this.getSite(siteToken);
+            }
+
             const paths = this.site.reduce((paths, el) => {
                 if (!paths.find(e => e === el.path))
                     paths.push(el.path)

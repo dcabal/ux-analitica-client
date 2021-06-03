@@ -18,7 +18,7 @@ export default {
     name: 'SiteGraphics',
     components: { UsageChart },
     computed: mapGetters(['site']),
-    mounted() {
+    created () {
         this.extract();
         this.group();
         this.calculateAverage();

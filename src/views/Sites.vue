@@ -37,10 +37,13 @@ export default {
     methods: {
         ...mapActions(['getSite', 'getOwner']),
 
-        onRowClick(site) {
+        async onRowClick(site) {
             this.currentSite = site;
-            sessionStorage.setItem('currentSite', site.token);
-            this.getSite(site.token);
+            sessionStorage.setItem('currentSite', JSON.stringify(site));
+            await this.getSite(site.token);
+
+            if (!this.error)
+                router.push({ path: '/dashboard' })
         }
     },
 

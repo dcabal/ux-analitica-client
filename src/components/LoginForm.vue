@@ -57,7 +57,7 @@ export default {
             
             if (!this.error) {
                 if (this.isLogin)
-                    router.push({ path: this.isLogin ? '/dashboard' : '/login'});
+                    router.push({ path: this.isLogin ? '/sites' : '/login'});
                 else
                     this.signupSuccess = true;
             }
