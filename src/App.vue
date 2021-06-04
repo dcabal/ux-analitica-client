@@ -7,19 +7,22 @@
       </div>
       <router-view/>
     </main>
+    <uxa-loader v-if="showLoader" />
   </div>
 </template>
 
 <script>
 import Header from './components/Header';
+import UxaLoader from './components/UxaLoader';
 import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   components: {
-    Header
+    Header,
+    UxaLoader
   },
-  computed: mapGetters(['error'])
+  computed: mapGetters(['error', 'showLoader'])
 }
 
 
