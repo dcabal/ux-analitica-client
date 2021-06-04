@@ -43,7 +43,7 @@ export default {
             await this.getSite(site.token);
 
             if (!this.error)
-                router.push({ path: '/dashboard' })
+                router.push({ path: '/dashboard' });
         }
     },
 

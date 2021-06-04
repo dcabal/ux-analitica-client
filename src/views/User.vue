@@ -12,7 +12,7 @@
 <script>
 import UserUpdate from '../components/UserUpdate';
 import { mapActions, mapGetters } from 'vuex';
-import { router } from 'vue-router';
+import router from '../router';
 
 export default {
     components: { UserUpdate },

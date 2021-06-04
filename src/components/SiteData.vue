@@ -23,7 +23,7 @@
 import GlobalData from './GlobalData.vue';
 import SiteGraphics from './SiteGraphics.vue';
 import { mapActions, mapGetters } from 'vuex';
-import { router } from 'vue-router';
+import router from '../router';
 
 export default {
     components: { SiteGraphics, GlobalData },
