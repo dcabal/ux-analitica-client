@@ -1,5 +1,5 @@
 <template>
-    <table class="table">
+        <table class="table">
         <colgroup>
             <col span="2">
             <col span="3" class="time">
@@ -9,51 +9,54 @@
         </colgroup>
         <thead>
             <tr>
-                <th rowspan="2">Ruta</th>
-                <th rowspan="2">Visitas</th>
-                <th colspan="3">Tiempo de estancia (ms)</th>
+                <th rowspan="2" @click="dataSort('path')">Ruta</th>
+                <th rowspan="2" @click="dataSort('visits')">Visitas</th>
+                <th colspan="3">Tiempo de estancia (s)</th>
                 <th colspan="3">Píxeles recorridos</th>
                 <th colspan="3">Número de clicks</th>
                 <th colspan="3">Número de pulsaciones de teclado</th>
             </tr>
             <tr>
-                <th>Máximo</th>
-                <th>Mínimo</th>
-                <th>Medio</th>
-                <th>Máximo</th>
-                <th>Mínimo</th>
-                <th>Medio</th>
-                <th>Máximo</th>
-                <th>Mínimo</th>
-                <th>Medio</th>
-                <th>Máximo</th>
-                <th>Mínimo</th>
-                <th>Medio</th>
+                <th @click="dataSort('timeMax')">Máximo</th>
+                <th @click="dataSort('timeMin')">Mínimo</th>
+                <th @click="dataSort('timeAvg')">Medio</th>
+                <th @click="dataSort('pixelsMax')">Máximo</th>
+                <th @click="dataSort('pixelsMin')">Mínimo</th>
+                <th @click="dataSort('pixelsAvg')">Medio</th>
+                <th @click="dataSort('clicksMax')">Máximo</th>
+                <th @click="dataSort('clicksMin')">Mínimo</th>
+                <th @click="dataSort('clicksAvg')">Medio</th>
+                <th @click="dataSort('keysMax')">Máximo</th>
+                <th @click="dataSort('keysMin')">Mínimo</th>
+                <th @click="dataSort('keysAvg')">Medio</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="path in Object.entries(globalMetrics)" :key="path[0]">
-                <td>{{path[0]}}</td>
-                <td>{{path[1].visits}}</td>
-                <td>{{path[1].time.max}}</td>
-                <td>{{path[1].time.min}}</td>
-                <td>{{path[1].time.avg}}</td>
-                <td>{{path[1].pixels.max}}</td>
-                <td>{{path[1].pixels.min}}</td>
-                <td>{{path[1].pixels.avg}}</td>
-                <td>{{path[1].clicks.max}}</td>
-                <td>{{path[1].clicks.min}}</td>
-                <td>{{path[1].clicks.avg}}</td>
-                <td>{{path[1].keyStrokes.max}}</td>
-                <td>{{path[1].keyStrokes.min}}</td>
-                <td>{{path[1].keyStrokes.avg}}</td>
+            <tr v-for="m of globalMetrics" :key="m.globalMetrics">
+                <td>{{m.path}}</td>
+                <td>{{m.visits}}</td>
+                <td>{{Math.round(m.timeMax / 1000)}}</td>
+                <td>{{Math.round(m.timeMin / 1000)}}</td>
+                <td>{{Math.round(m.timeAvg / 1000)}}</td>
+                <td>{{m.pixelsMax}}</td>
+                <td>{{m.pixelsMin}}</td>
+                <td>{{m.pixelsAvg}}</td>
+                <td>{{m.clicksMax}}</td>
+                <td>{{m.clicksMin}}</td>
+                <td>{{m.clicksAvg}}</td>
+                <td>{{m.keysMax}}</td>
+                <td>{{m.keysMin}}</td>
+                <td>{{m.keysAvg}}</td>
             </tr>
         </tbody>
     </table>
 </template>
 
 <script>
+import { reactive } from '@vue/reactivity';
 import { mapActions, mapGetters } from 'vuex'
+
+
 export default {
     name: 'GlobalData',
     computed: mapGetters(['site']),
@@ -65,67 +68,96 @@ export default {
 
         async getGlobalData() {
             let siteData = await this._getSitePaths();
+
             for (const siteVisits of this.site) {
-                const { time, pixels, clicks, keyStrokes } = siteData[siteVisits.path];
+                const path = siteData.find(e => e.path === siteVisits.path);
                 
-                time.max = siteVisits.timeTotal > time.max ? siteVisits.timeTotal : time.max;
-                time.min = time.min === 0 ? siteVisits.timeTotal : siteVisits.timeTotal < time.min ? siteVisits.timeTotal : time.min;
-                time.sum += siteVisits.timeTotal;
+                path.timeMax = siteVisits.timeTotal > path.timeMax ? siteVisits.timeTotal : path.timeMax;
+                path.timeMin = path.timeMin === 0 ? siteVisits.timeTotal : siteVisits.timeTotal < path.timeMin ? siteVisits.timeTotal : path.timeMin;
+                path.timeSum += siteVisits.timeTotal;
 
-                pixels.max = siteVisits.mouseMovements.length > pixels.max ? siteVisits.mouseMovements.length : pixels.max;
-                pixels.min = pixels.min === 0 ? siteVisits.mouseMovements.length : siteVisits.mouseMovements.length < pixels.min ? siteVisits.mouseMovements.length : pixels.min;
-                pixels.sum += siteVisits.mouseMovements.length;
+                path.pixelsMax = siteVisits.mouseMovements.length > path.pixelsMax ? siteVisits.mouseMovements.length : path.pixelsMax;
+                path.pixelsMin = path.pixelsMin === 0 ? siteVisits.mouseMovements.length : siteVisits.mouseMovements.length < path.pixelsMin ? siteVisits.mouseMovements.length : path.pixelsMin;
+                path.pixelsSum += siteVisits.mouseMovements.length;
 
-                clicks.max = siteVisits.totalClicks > clicks.max ? siteVisits.totalClicks : clicks.max;
-                clicks.min = clicks.min === 0 ? siteVisits.totalClicks : siteVisits.totalClicks < clicks.min ? siteVisits.totalClicks : clicks.min;
-                clicks.sum += siteVisits.totalClicks;
+                path.clicksMax = siteVisits.totalClicks > path.clicksMax ? siteVisits.totalClicks : path.clicksMax;
+                path.clicksMin = path.clicksMin === 0 ? siteVisits.totalClicks : siteVisits.totalClicks < path.clicksMin ? siteVisits.totalClicks : path.clicksMin;
+                path.clicksSum += siteVisits.totalClicks;
 
-                keyStrokes.max = siteVisits.totalKeyStrokes > keyStrokes.max ? siteVisits.totalKeyStrokes : keyStrokes.max;
-                keyStrokes.min = keyStrokes.min === 0 ? siteVisits.totalKeyStrokes : siteVisits.totalKeyStrokes < keyStrokes.min ? siteVisits.totalKeyStrokes : keyStrokes.min;
-                keyStrokes.sum += siteVisits.totalKeyStrokes;
+                path.keysMax = siteVisits.totalKeyStrokes > path.keysMax ? siteVisits.totalKeyStrokes : path.keysMax;
+                path.keysMin = path.keysMin === 0 ? siteVisits.totalKeyStrokes : siteVisits.totalKeyStrokes < path.keysMin ? siteVisits.totalKeyStrokes : path.keysMin;
+                path.keysSum += siteVisits.totalKeyStrokes;
 
-                siteData[siteVisits.path].visits++;
+                path.visits++;
             }
 
-            Object.values(siteData).forEach(path => {
-                Object.values(path).forEach(data => {
-                    if (data.hasOwnProperty('avg'))
-                        data.avg = Math.floor(data.sum / path.visits);
-                });
-            });
+            for (const path of siteData) {
+                path.timeAvg = Math.floor(path.timeSum / path.visits);
+                path.pixelsAvg = Math.floor(path.pixelsSum / path.visits);
+                path.clicksAvg = Math.floor(path.clicksSum / path.visits);
+                path.keysAvg = Math.floor(path.keysSum / path.visits);
+            }
+            this.globalMetricsDefault = siteData;
             this.globalMetrics = siteData;
         },
 
         async _getSitePaths() {
-            const sitePaths = {};
 
             if (!this.site) {
                 const siteToken = JSON.parse(sessionStorage.getItem('currentSite')).token;
                 await this.getSite(siteToken);
             }
 
-            const paths = this.site.reduce((paths, el) => {
-                if (!paths.find(e => e === el.path))
-                    paths.push(el.path)
+            const siteData = this.site.reduce((paths, el) => {
+                if (!paths.find(e => e.path === el.path))
+                    paths.push({ 
+                        path: el.path,
+                        visits: 0,
+                        timeMax: 0,
+                        timeMin: 0,
+                        timeSum: 0,
+                        timeAvg: 0,
+                        pixelsMax: 0,
+                        pixelsMin: 0,
+                        pixelsSum: 0,
+                        pixelsAvg: 0,
+                        clicksMax: 0,
+                        clicksMin: 0,
+                        clicksSum: 0,
+                        clicksAvg: 0,
+                        keysMax: 0,
+                        keysMin: 0,
+                        keysSum: 0,
+                        keysAvg: 0,
+                    });
                 
                 return paths;
             }, []);
 
-            for (const path of paths) {
-                sitePaths[path] = {
-                    time: { max: 0, min: 0, avg: 0, sum: 0 },
-                    pixels: { max: 0, min: 0, avg: 0, sum: 0 },
-                    clicks: { max: 0, min: 0, avg: 0, sum: 0 },
-                    keyStrokes: { max: 0, min: 0, avg: 0, sum: 0 },
-                    visits: 0
-                };
-            }
-            return sitePaths;
+            return siteData;
         },
+
+        dataSort(field) {
+            if (this.lastSort.field === field) {
+                this.lastSort.asc = !this.lastSort.asc;
+            } else {
+                this.lastSort.field = field;
+                this.lastSort.asc = true;
+            }
+            
+            this.globalMetrics.sort((a, b) => {
+                if (typeof a[field] === 'string')
+                    return this.lastSort.asc ? (a[field] > b[field]) - (b[field] > a[field]) : (b[field] > a[field]) - (a[field] > b[field]);
+                else
+                    return this.lastSort.asc ? a[field] - b[field] : b[field] - a[field];
+            });
+        }
     },
     data() {
         return {
-            globalMetrics: {}
+            globalMetricsDefault: [],
+            globalMetrics: reactive([]),
+            lastSort: { field: '', asc: false }
         }
     }
 }
