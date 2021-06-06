@@ -1,11 +1,13 @@
 import http from '../../util/Http';
 
 const state = {
-    site: null
+    site: null,
+    selectedRoute: ''
 };
 
 const getters = {
-    site: state => state.site
+    site: state => state.site,
+    selectedRoute: state => state.selectedRoute
 };
 
 const actions = {
@@ -18,7 +20,8 @@ const actions = {
 };
 
 const mutations = {
-    setSite: (state, site) => state.site = site
+    setSite: (state, site) => state.site = site,
+    setRoute: (state, route) => state.selectedRoute = route
 };
 
 export default {

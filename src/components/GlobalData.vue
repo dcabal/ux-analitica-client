@@ -74,7 +74,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="m of globalMetrics" :key="m.globalMetrics">
+            <tr v-for="m of globalMetrics" :key="m.globalMetrics" @click="setRoute(m.path)">
                 <td class="align-left">{{m.path}}</td>
                 <td>{{m.visits}}</td>
                 <td>{{Math.round(m.timeMax / 1000)}}</td>
@@ -96,7 +96,7 @@
 
 <script>
 import { reactive } from '@vue/reactivity';
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 
 
 export default {
@@ -108,6 +108,7 @@ export default {
 
     methods: {
         ...mapActions(['getSite']),
+        ...mapMutations(['setRoute']),
 
         async getGlobalData() {
             let siteData = await this._getSitePaths();

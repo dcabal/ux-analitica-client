@@ -10,7 +10,7 @@
                 <global-data/>
             </div>
         </section>
-        <section class="row">
+        <section class="row" v-if="selectedRoute">
            <div class="col-12">
                 <site-graphics/>
             </div>
@@ -31,7 +31,7 @@ export default {
     methods: {
         ...mapActions(['getSite', 'getOwner'])
     },
-    computed: mapGetters(['site']),
+    computed: mapGetters(['site', 'selectedRoute']),
     
     data() {
         return {

@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div v-for="(site, index) in Object.entries(groupedElements)" :key="index"  class="row mt-3">
-            <h1>Ruta: {{site[0]}}</h1>
-            <usage-chart chart-type="interactions" :chart-data="site[1]" />
-            <usage-chart chart-type="mouse" :chart-data="site[1]" />
-            <usage-chart chart-type="tab" :chart-data="site[1]" />
-            <usage-chart chart-type="untracked" :chart-data="site[1]" />
+        <div class="row mt-3">
+            <h1>Ruta: {{selectedRoute}}</h1>
+            <usage-chart chart-type="interactions" :chart-data="groupedElements[selectedRoute]" :key="selectedRoute" />
+            <usage-chart chart-type="mouse" :chart-data="groupedElements[selectedRoute]" :key="selectedRoute" />
+            <usage-chart chart-type="tab" :chart-data="groupedElements[selectedRoute]" :key="selectedRoute" />
+            <usage-chart chart-type="untracked" :chart-data="groupedElements[selectedRoute]" :key="selectedRoute" />
         </div>
     </div>
 </template>
@@ -17,13 +17,14 @@ import UsageChart from './UsageChart.vue';
 export default {
     name: 'SiteGraphics',
     components: { UsageChart },
-    computed: mapGetters(['site']),
+    computed: mapGetters(['site', 'selectedRoute']),
     created () {
         this.extract();
         this.group();
         this.calculateAverage();
     },
     methods: {
+        
         /**
          * Extrae las interacciones por ruta y elemento.
          */
