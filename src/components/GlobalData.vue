@@ -229,7 +229,14 @@ td {
         text-align: left;
     }
 }
-
+tr {
+    &:hover {
+        td {
+            background: #efefef;
+            cursor: pointer;
+        }
+    }
+}
 span, i {
     cursor: pointer;
 }
