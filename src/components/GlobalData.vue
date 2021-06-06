@@ -9,31 +9,73 @@
         </colgroup>
         <thead>
             <tr>
-                <th rowspan="2" @click="dataSort('path')">Ruta</th>
-                <th rowspan="2" @click="dataSort('visits')">Visitas</th>
+                <th rowspan="2">
+                    <span @click="dataSort('path')">Ruta</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th rowspan="2">
+                    <span @click="dataSort('visits')">Visitas</span>
+                    <i class="bi bi-filter"></i>
+                </th>
                 <th colspan="3">Tiempo de estancia (s)</th>
                 <th colspan="3">Píxeles recorridos</th>
                 <th colspan="3">Número de clicks</th>
                 <th colspan="3">Número de pulsaciones de teclado</th>
             </tr>
             <tr>
-                <th @click="dataSort('timeMax')">Máximo</th>
-                <th @click="dataSort('timeMin')">Mínimo</th>
-                <th @click="dataSort('timeAvg')">Medio</th>
-                <th @click="dataSort('pixelsMax')">Máximo</th>
-                <th @click="dataSort('pixelsMin')">Mínimo</th>
-                <th @click="dataSort('pixelsAvg')">Medio</th>
-                <th @click="dataSort('clicksMax')">Máximo</th>
-                <th @click="dataSort('clicksMin')">Mínimo</th>
-                <th @click="dataSort('clicksAvg')">Medio</th>
-                <th @click="dataSort('keysMax')">Máximo</th>
-                <th @click="dataSort('keysMin')">Mínimo</th>
-                <th @click="dataSort('keysAvg')">Medio</th>
+                <th>
+                    <span @click="dataSort('timeMax')">Máximo</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('timeMin')">Mínimo</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('timeAvg')">Medio</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('pixelsMax')">Máximo</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('pixelsMin')">Mínimo</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('pixelsAvg')">Medio</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('clicksMax')">Máximo</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('clicksMin')">Mínimo</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('clicksAvg')">Medio</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('keysMax')">Máximo</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('keysMin')">Mínimo</span>
+                    <i class="bi bi-filter"></i>
+                </th>
+                <th>
+                    <span @click="dataSort('keysAvg')">Medio</span>
+                    <i class="bi bi-filter"></i>
+                </th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="m of globalMetrics" :key="m.globalMetrics">
-                <td>{{m.path}}</td>
+                <td class="align-left">{{m.path}}</td>
                 <td>{{m.visits}}</td>
                 <td>{{Math.round(m.timeMax / 1000)}}</td>
                 <td>{{Math.round(m.timeMin / 1000)}}</td>
@@ -63,6 +105,7 @@ export default {
     created() {
         this.getGlobalData();
     },
+
     methods: {
         ...mapActions(['getSite']),
 
@@ -175,5 +218,18 @@ export default {
 }
 .keystrokes {
     background: #FCDEAC;
+}
+th {
+    text-align: center;
+}
+td {
+    text-align: right;
+    &.align-left{
+        text-align: left;
+    }
+}
+
+span, i {
+    cursor: pointer;
 }
 </style>
