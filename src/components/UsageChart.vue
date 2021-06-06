@@ -17,8 +17,10 @@ export default {
     },
     
     mounted() {
-        this.getCategories();
-        this.getSeries();
+        if (this.chartData) {
+            this.getCategories();
+            this.getSeries();
+        }
     },
 
     methods: {

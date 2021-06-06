@@ -1,11 +1,31 @@
 <template>
     <div>
         <div class="row mt-3">
-            <h1>Ruta: {{selectedRoute}}</h1>
-            <usage-chart chart-type="interactions" :chart-data="groupedElements[selectedRoute]" :key="selectedRoute" />
-            <usage-chart chart-type="mouse" :chart-data="groupedElements[selectedRoute]" :key="selectedRoute" />
-            <usage-chart chart-type="tab" :chart-data="groupedElements[selectedRoute]" :key="selectedRoute" />
-            <usage-chart chart-type="untracked" :chart-data="groupedElements[selectedRoute]" :key="selectedRoute" />
+            <div class ="col-12 col-lg-6">
+                <h1>Ruta: {{selectedRoute}}</h1>
+            </div>
+            <div class="col-6 col-lg-3 dropdown">
+                <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{watchPeriod}}
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    <li><a class="dropdown-item" href="#" @click="setTime('w')">Últimos 7 días</a></li>
+                    <li><a class="dropdown-item" href="#" @click="setTime('m')">Últimos 30 días</a></li>
+                    <li><a class="dropdown-item" href="#" @click="setTime('t')">Últimos 90 días</a></li>
+                    <li><a class="dropdown-item" href="#" @click="setTime('s')">Últimos 180 días</a></li>
+                    <li><a class="dropdown-item" href="#" @click="setTime('y')">Último año</a></li>
+                    <li><a class="dropdown-item" href="#" @click="setTime('a')">Todo el periodo</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row" v-if="groupedElements[selectedRoute]">
+            <usage-chart chart-type="interactions" :chart-data="groupedElements[selectedRoute]" :key="`${selectedRoute}${dates.start}`" />
+            <usage-chart chart-type="mouse" :chart-data="groupedElements[selectedRoute]" :key="`${selectedRoute}${dates.start}`" />
+            <usage-chart chart-type="tab" :chart-data="groupedElements[selectedRoute]" :key="`${selectedRoute}${dates.start}`" />
+            <usage-chart chart-type="untracked" :chart-data="groupedElements[selectedRoute]" :key="`${selectedRoute}${dates.start}`" />
+        </div>
+        <div class="alert alert-danger mt-3" v-else>
+            No existen datos para el periodo seleccionado
         </div>
     </div>
 </template>
@@ -30,10 +50,13 @@ export default {
          */
         extract() {
             for (const visit of this.site) {
-                if (!this.interactions[visit.path])
-                    this.interactions[visit.path] = visit.interactions;
-                else
-                    this.interactions[visit.path] = [...this.interactions[visit.path], ...visit.interactions];
+                const visitDate = new Date(visit.date);
+                if (visitDate > this.dates.start && visitDate < this.dates.end) {
+                    if (!this.interactions[visit.path])
+                        this.interactions[visit.path] = visit.interactions;
+                    else
+                        this.interactions[visit.path] = [...this.interactions[visit.path], ...visit.interactions];
+                }
             }
         },
         /**
@@ -63,6 +86,26 @@ export default {
                     }
                 }
             });
+        },
+
+        setTime(period, endDate = new Date()) {
+            const today = new Date();
+            const periods = {
+                'w': { startDate: today.setDate(today.getDate() - 7), watch: 'Últimos 7 días' },
+                'm': { startDate: today.setDate(today.getDate() - 30), watch: 'Últimos 30 días' },
+                't': { startDate: today.setDate(today.getDate() - 90), watch: 'Últimos 90 días' },
+                's': { startDate: today.setDate(today.getDate() - 180), watch: 'Últimos 180 días' },
+                'y': { startDate: today.setYear(today.getFullYear() - 1), watch: 'Último año' },
+                'a': { startDate: new Date(0), watch: 'Todo el periodo'}
+            };
+            this.dates.start = periods[period].startDate;
+            this.dates.end = endDate;
+            this.watchPeriod = periods[period].watch;
+            this.interactions = {};
+            this.groupedElements = {};
+            this.extract();
+            this.group();
+            this.calculateAverage();
         },
 
         /**
@@ -111,16 +154,14 @@ export default {
             }
 
             return route;
-        },
-
-        getUsage(usage, data) {
-
         }
     },
     data() {
         return {
             interactions: {},
-            groupedElements: {}
+            groupedElements: {},
+            dates: { start: new Date(0), end: new Date() },
+            watchPeriod: 'Todo el periodo'
         }
     }
 }
