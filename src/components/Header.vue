@@ -12,6 +12,9 @@
                             <li class="nav-item">
                                 <router-link class="nav-link" to="/sites">Sitios registrados</router-link>
                             </li>
+                            <li class="nav-item">
+                                <router-link class="nav-link" to="/warnings">Advertencias</router-link>
+                            </li>
                         </ul>
                         <button type="button" class="btn btn-danger" @click="onLogOut">Cerrar sesión</button>
                     </div>

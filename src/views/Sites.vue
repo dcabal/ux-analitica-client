@@ -30,6 +30,7 @@
 import NewSite from '../components/NewSite';
 import { mapGetters, mapActions } from 'vuex';
 import router from '../router';
+import { checkLogin } from '../util/util';
 
 export default {
     components: { NewSite },
@@ -56,12 +57,7 @@ export default {
     computed: mapGetters(['error', 'owner']),
 
     created() {
-        const jwt = sessionStorage.getItem('uxa-jwt');
-        
-        if (!this.owner?.userName && jwt)
-            this.getOwner();
-        else if (!jwt)
-            router.push({ path: '/login'});
+        checkLogin(); 
     }
 }
 </script>

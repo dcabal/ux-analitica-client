@@ -21,6 +21,10 @@ const routes = [
   {
     path: '/sites',
     component: () => import('../views/Sites.vue')
+  },
+  {
+    path: '/warnings',
+    component: () => import('../views/Warnings.vue')
   }
 ];
 

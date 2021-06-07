@@ -12,7 +12,7 @@
 <script>
 import UserUpdate from '../components/UserUpdate';
 import { mapActions, mapGetters } from 'vuex';
-import router from '../router';
+import { checkLogin } from '../util/util';
 
 export default {
     components: { UserUpdate },
@@ -23,11 +23,7 @@ export default {
     },
 
     created() {
-        const jwt = sessionStorage.getItem('uxa-jwt');
-        if (jwt && !this.owner?.name)
-            this.getOwner();
-        else
-            router.push({ path: '/login' });
+        checkLogin();
     }    
 }
 </script>

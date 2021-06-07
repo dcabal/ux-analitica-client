@@ -1,4 +1,3 @@
-// import { mapActions } from 'vuex';
 import store from '../store';
 
 class Http {
