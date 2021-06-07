@@ -74,7 +74,12 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="m of globalMetrics" :key="m.globalMetrics" @click="setRoute(m.path)">
+            <tr 
+                v-for="(m, index) of globalMetrics" 
+                :key="m.globalMetrics" 
+                :class="{active: activeRow === index}" 
+                @click="setActive(m.path, index)"
+            >
                 <td class="align-left">{{m.path}}</td>
                 <td>{{m.visits}}</td>
                 <td>{{Math.round(m.timeMax / 1000)}}</td>
@@ -195,13 +200,19 @@ export default {
                 else
                     return this.lastSort.asc ? a[field] - b[field] : b[field] - a[field];
             });
+        },
+
+        setActive(path, index) {
+            this.activeRow = this.activeRow === index ? -1 : index;
+            this.setRoute(path);
         }
     },
     data() {
         return {
             globalMetricsDefault: [],
             globalMetrics: reactive([]),
-            lastSort: { field: '', asc: false }
+            lastSort: { field: '', asc: false },
+            activeRow: -1
         }
     }
 }
@@ -230,6 +241,9 @@ td {
     }
 }
 tr {
+    &.active {
+        background: #97ff97;
+    }
     &:hover {
         td {
             background: #efefef;
